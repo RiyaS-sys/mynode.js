@@ -1,0 +1,113 @@
+/* Background Image Styles */
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    min-height: 100vh;
+    background: url('WhatsApp Image 2024-10-13 at 05.37.16_c148d40c.jpg') no-repeat center center fixed;
+    background-size: cover; /* Ensure the background covers the full page */
+    position: relative;
+    padding-bottom: 50px; /* Ensure space for the footer */
+}
+
+/* Header Styles */
+header {
+    position: relative;
+    z-index: 1;
+    background-color: rgba(255, 0, 0, 0.6); /* Red with 60% opacity */
+    padding: 20px;
+    text-align: center;
+    color: white; /* White font color */
+}
+
+/* Navigation Menu Styles */
+nav ul {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    justify-content: center; /* Center the navigation buttons */
+    align-items: center;
+}
+
+nav ul li {
+    margin: 0 15px; /* Space between the navigation items */
+}
+
+nav ul li a {
+    text-decoration: none;
+    color: white; /* White font color for navigation */
+    font-size: 18px;
+    padding: 10px 20px;
+    background-color: transparent; /* Keep the nav background transparent */
+    border-radius: 5px;
+    transition: background-color 0.3s ease;
+}
+
+nav ul li a:hover {
+    background-color: rgba(255, 255, 255, 0.2); /* Light hover effect */
+}
+
+/* Main Content Styles */
+main {
+    position: relative;
+    z-index: 1;
+    padding: 20px;
+    text-align: center;
+}
+
+/* Semi-transparent background for sections */
+section {
+    background-color: rgba(0, 0, 0, 0.6); /* Semi-transparent black background */
+    padding: 20px;
+    border-radius: 10px;
+    color: white; /* White font color for text readability */
+    max-width: 800px;
+    margin: 0 auto; /* Center the section */
+}
+
+/* Services list aligned to the left */
+main ul {
+    text-align: left;
+    margin-left: 20px; /* Adjust this value as needed */
+}
+
+/* Service Buttons Styling */
+.service-buttons {
+    margin-top: 20px;
+}
+
+.service-buttons a {
+    text-decoration: none;
+    background-color: rgba(255, 0, 0, 0.8); /* Button background in red */
+    color: white;
+    padding: 10px 20px;
+    margin: 5px;
+    display: inline-block;
+    border-radius: 5px;
+    transition: background-color 0.3s ease;
+}
+
+.service-buttons a:hover {
+    background-color: rgba(255, 0, 0, 1); /* Slightly darker red on hover */
+}
+
+/* Footer Styles */
+footer {
+    position: absolute;
+    z-index: 1;
+    background-color: rgba(255, 0, 0, 0.6); /* Red with 60% opacity */
+    padding: 10px;
+    text-align: center;
+    bottom: 0;
+    width: 100%;
+    color: white; /* White font color for footer */
+    font-size: 14px;
+}
+
+/* Ensure footer touches the bottom */
+footer {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+}
