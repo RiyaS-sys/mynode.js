@@ -2,11 +2,11 @@ pipeline {
     agent any
 
     tools {
-        nodejs "NodeJS_20" // Replace with your Node.js tool name from Jenkins global tool config
+        nodejs "NodeJS 18" // <- Use the exact name from Global Tool Configuration
     }
 
     environment {
-        PATH = "${tool 'NodeJS_20'}/bin:${env.PATH}" // Ensure Node.js is in PATH
+        PATH = "${tool 'NodeJS 18'}/bin:${env.PATH}"
     }
 
     stages {
@@ -54,4 +54,5 @@ pipeline {
         }
     }
 }
+
 
