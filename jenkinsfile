@@ -2,59 +2,39 @@ pipeline {
     agent any
 
     tools {
-        nodejs 'NodeJS 18'  // ✅ Must match the name you configured in Global Tool Config
+        nodejs "NodeJS 18"  // You can name your version
     }
 
     stages {
-        stage('📥 Clone Repository') {
+        stage('Clone Code') {
             steps {
-                echo 'Cloning GitHub repository...'
-                git url: 'https://github.com/RiyaS-sys/mynode.js.git', branch: 'main'
+                git 'https://github.com/yourusername/your-repo-name.git'
             }
         }
 
-        stage('📦 Install Dependencies') {
+        stage('Install Dependencies') {
             steps {
-                echo 'Installing npm packages...'
                 sh 'npm install'
             }
         }
 
-        stage('🧪 Run Tests') {
+        stage('Run Tests') {
             steps {
-                echo 'Running tests...'
-                script {
-                    // If no tests are defined, avoid failure
-                    try {
-                        sh 'npm test'
-                    } catch (err) {
-                        echo 'No tests defined or tests failed. Skipping...'
-                    }
-                }
+                sh 'npm test'  // Make sure you have test scripts
             }
         }
 
-        stage('🏗️ Build (Optional)') {
+        stage('Build') {
             steps {
-                echo 'Build step placeholder (optional)'
-                // Uncomment if you add a build command in package.json
-                // sh 'npm run build'
+                echo 'Build step - optional for Node.js'
             }
         }
 
-        stage('🚀 Deploy (Manual Placeholder)') {
+        stage('Deploy') {
             steps {
-                echo 'Deployment logic goes here (FTP, SSH, Render, Heroku, etc.)'
+                echo 'Deploying... (you can set this up to copy files to server)'
             }
-        }
-    }
-
-    post {
-        success {
-            echo '✅ Pipeline finished successfully!'
-        }
-        failure {
-            echo '❌ Pipeline failed. Check logs for details.'
         }
     }
 }
+
