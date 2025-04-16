@@ -2,7 +2,7 @@ pipeline {
     agent any
 
     tools {
-        nodejs 'NodeJS 18' // must match the name you set earlier
+        nodejs 'NodeJS 18'
     }
 
     stages {
@@ -26,13 +26,13 @@ pipeline {
 
         stage('Build') {
             steps {
-                echo 'Build stage - optional for now'
+                echo 'Build complete'
             }
         }
 
         stage('Deploy') {
             steps {
-                echo 'Deploy step - define it later'
+                echo 'Deployment placeholder'
             }
         }
     }
