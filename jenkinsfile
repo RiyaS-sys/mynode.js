@@ -23,7 +23,6 @@ pipeline {
         stage('Run Tests') {
             steps {
                 script {
-                    // Skipping tests if not defined
                     echo "Skipping tests as none are defined"
                 }
             }
@@ -62,6 +61,7 @@ pipeline {
         }
     }
 }
+
 
 
 
