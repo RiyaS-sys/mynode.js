@@ -2,11 +2,7 @@ pipeline {
     agent any
 
     tools {
-        nodejs 'NodeJS 18' // Match your configured tool name
-    }
-
-    environment {
-        PATH = "${tool 'NodeJS 18'}/bin:${env.PATH}"
+        nodejs 'NodeJS' // Replace with your Node.js installation name in Jenkins
     }
 
     stages {
@@ -18,26 +14,26 @@ pipeline {
 
         stage('Install Dependencies') {
             steps {
-                sh 'npm install'
+                bat 'npm install'
             }
         }
 
         stage('Run Tests') {
             steps {
-                sh 'npm test'
+                bat 'npm test'
             }
         }
 
         stage('Build') {
             steps {
-                sh 'npm run build'
+                bat 'npm run build'
             }
         }
 
         stage('Deploy') {
             steps {
-                echo 'Deploying application...'
-                // Add deployment commands here
+                echo 'Deploying the application...'
+                // Add actual deploy steps here
             }
         }
     }
@@ -54,6 +50,7 @@ pipeline {
         }
     }
 }
+
 
 
 
