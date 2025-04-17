@@ -1,23 +1,41 @@
 pipeline {
     agent any
+
     stages {
-        stage('Build') {
+        stage('Clone Repo') {
             steps {
-                bat 'echo Building project'
+                // Cloning the repository from GitHub
+                git 'https://github.com/RiyaS-sys/mynode.js'
             }
         }
+
+        stage('Install Dependencies') {
+            steps {
+                // Installing dependencies using npm
+                echo 'Installing dependencies...'
+                bat 'npm install'
+            }
+        }
+
         stage('Test') {
             steps {
-                bat 'echo Running tests'
+                // Running tests using npm test (if any)
+                echo 'Running tests...'
+                bat 'npm test'
             }
         }
+
         stage('Deploy') {
             steps {
-                bat 'echo Deploying project'
+                // Add your deployment commands here
+                echo 'Deploying application...'
+                // For example, you might use bat './deploy.bat' if you have a deploy script.
+                bat 'echo Deployment process will be executed here.'
             }
         }
     }
 }
+
 
 
 
