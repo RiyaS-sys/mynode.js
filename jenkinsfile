@@ -28,6 +28,9 @@ pipeline {
         stage('Build') {
             steps {
                 script {
+                    sh 'node -v'
+                    sh 'npm install'
+
                     // Add your build commands here
                     echo "Building project..."
                 }
