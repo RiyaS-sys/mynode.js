@@ -1,9 +1,6 @@
 pipeline {
     agent any
 
-    environment {
-        NODE_HOME = tool name: 'NodeJS 18', type: 'NodeJS'
-    }
 
     stages {
         stage('Checkout SCM') {
