@@ -1,11 +1,15 @@
 pipeline {
     agent any
 
+    environment {
+        GIT_CREDENTIALS = 'My_project' // Replace with the ID of your Git credentials in Jenkins
+    }
+
     stages {
         stage('Clone Repo') {
             steps {
-                // Cloning the repository from GitHub
-                git 'https://github.com/RiyaS-sys/mynode.js'
+                // Clone the repository, specify the correct branch and credentials
+                git branch: 'main', credentialsId: "${GIT_CREDENTIALS}", url: 'https://github.com/RiyaS-sys/mynode.js'
             }
         }
 
@@ -29,12 +33,12 @@ pipeline {
             steps {
                 // Add your deployment commands here
                 echo 'Deploying application...'
-                // For example, you might use bat './deploy.bat' if you have a deploy script.
                 bat 'echo Deployment process will be executed here.'
             }
         }
     }
 }
+
 
 
 
