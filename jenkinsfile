@@ -1,66 +1,24 @@
 pipeline {
     agent any
-
-
     stages {
-        stage('Checkout SCM') {
-            steps {
-                checkout scm
-            }
-        }
-
-        stage('Install Dependencies') {
-            steps {
-                script {
-                    bat 'npm install'
-                }
-            }
-        }
-
-        stage('Run Tests') {
-            steps {
-                script {
-                    echo "Skipping tests as none are defined"
-                }
-            }
-        }
-
         stage('Build') {
             steps {
-                script {
-                    sh 'node -v'
-                    sh 'npm install'
-
-                    // Add your build commands here
-                    echo "Building project..."
-                }
+                bat 'echo Building project'
             }
         }
-
+        stage('Test') {
+            steps {
+                bat 'echo Running tests'
+            }
+        }
         stage('Deploy') {
             steps {
-                script {
-                    // Add your deploy commands here
-                    echo "Deploying project..."
-                }
+                bat 'echo Deploying project'
             }
-        }
-    }
-
-    post {
-        always {
-            echo 'Cleaning up...'
-        }
-
-        success {
-            echo 'Build succeeded!'
-        }
-
-        failure {
-            echo 'Build failed.'
         }
     }
 }
+
 
 
 
