@@ -1,8 +1,14 @@
 // tests/server.test.js
 const request = require('supertest');
-const express = require('express');
-const mysql = require('mysql');
-const app = require('../server'); // We'll modify server.js to export the app
+
+// Mock bcrypt before importing anything that uses it
+jest.mock('bcrypt', () => ({
+  compareSync: jest.fn((password, hash) => password === 'admin123'),
+  hashSync: jest.fn(password => `hashed_${password}`)
+}));
+
+// Now import the app
+const app = require('../server');
 
 // Mock MySQL
 jest.mock('mysql', () => {
@@ -64,4 +70,5 @@ describe('Blood Bank API Tests', () => {
     expect(res.status).toBe(200);
     expect(res.text).toBe('Blood request submitted successfully!');
   });
+
 });

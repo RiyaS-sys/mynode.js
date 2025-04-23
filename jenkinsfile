@@ -16,24 +16,25 @@ pipeline {
         
         stage('Build Docker Image') {
             steps {
-                echo 'Building Docker image...'
-                bat "docker build -t %DOCKER_IMAGE%:%DOCKER_TAG% ."
+                echo 'Building Docker image for testing...'
+                bat "docker build --target test -t %DOCKER_IMAGE%-test:%DOCKER_TAG% ."
+                
+                echo 'Building Docker production image...'
+                bat "docker build --target production -t %DOCKER_IMAGE%:%DOCKER_TAG% ."
                 bat "docker tag %DOCKER_IMAGE%:%DOCKER_TAG% %DOCKER_IMAGE%:latest"
             }
         }
         
-        stage('Run Docker Tests') {
+        stage('Run Tests in Docker') {
             steps {
                 echo 'Running tests inside Docker container...'
-                // Run tests in a temporary container, using the same image we just built
-                bat "docker run --rm %DOCKER_IMAGE%:%DOCKER_TAG% npm test"
+                bat "docker run --rm %DOCKER_IMAGE%-test:%DOCKER_TAG%"
             }
         }
         
         stage('Run Docker Compose') {
             steps {
                 echo 'Starting application with Docker Compose...'
-                // Try to bring down any existing containers, but don't fail if there aren't any
                 bat 'docker-compose down || echo "No containers to remove"'
                 bat 'docker-compose up -d'
             }
@@ -43,13 +44,8 @@ pipeline {
             steps {
                 echo 'Verifying services are running...'
                 script {
-                    // Wait for application to be ready
                     bat 'timeout /t 10 /nobreak'
-                    
-                    // Check if services are running
                     bat 'docker ps'
-                    
-                    // Simple health check to the API
                     bat 'curl -f http://localhost:3000 || echo "Service check completed"'
                 }
             }
@@ -60,7 +56,6 @@ pipeline {
         always {
             echo 'Cleaning up...'
             bat 'docker-compose down || echo "No containers to remove"'
-            // Remove unused Docker images to save space
             bat 'docker image prune -f'
         }
         success {
