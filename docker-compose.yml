@@ -1,0 +1,28 @@
+version: "3.8"
+
+services:
+  app:
+    build: .
+    ports:
+      - "3000:3000"
+    depends_on:
+      - db
+    environment:
+      DB_HOST: db
+      DB_USER: root
+      DB_PASSWORD: yourpassword
+      DB_NAME: yourdbname
+
+  db:
+    image: mysql:5.7
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: yourpassword
+      MYSQL_DATABASE: yourdbname
+
+  frontend:
+      image: nginx:alpine
+      ports:
+        - "5000:80"
+      volumes:
+        - .:/usr/share/nginx/html:ro
