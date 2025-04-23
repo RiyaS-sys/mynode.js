@@ -44,8 +44,13 @@ pipeline {
             steps {
                 echo 'Verifying services are running...'
                 script {
-                    bat 'timeout /t 10 /nobreak'
+                    // Use ping with -n instead of timeout
+                    bat 'ping 127.0.0.1 -n 11 > nul'
+                    
+                    // Check Docker containers
                     bat 'docker ps'
+                    
+                    // Health check
                     bat 'curl -f http://localhost:3000 || echo "Service check completed"'
                 }
             }
