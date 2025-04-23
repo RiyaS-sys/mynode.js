@@ -4,7 +4,7 @@ pipeline {
     environment {
         DOCKER_IMAGE = 'blood-bank-app'
         DOCKER_TAG = "${env.BUILD_NUMBER}"
-        PATH = "${env.PATH};C:\\Program Files\\nodejs\\;C:\\Program Files\\Docker\\Docker\\resources\\bin"
+        PATH = "${env.PATH};C:\\Program Files\\Docker\\Docker\\resources\\bin"
     }
     
     stages {
@@ -14,25 +14,19 @@ pipeline {
             }
         }
         
-        stage('Install Dependencies') {
-            steps {
-                echo 'Installing dependencies...'
-                bat 'npm install'
-            }
-        }
-        
-        stage('Run Tests') {
-            steps {
-                echo 'Running tests...'
-                bat 'npm test'
-            }
-        }
-        
         stage('Build Docker Image') {
             steps {
                 echo 'Building Docker image...'
                 bat "docker build -t %DOCKER_IMAGE%:%DOCKER_TAG% ."
                 bat "docker tag %DOCKER_IMAGE%:%DOCKER_TAG% %DOCKER_IMAGE%:latest"
+            }
+        }
+        
+        stage('Run Docker Tests') {
+            steps {
+                echo 'Running tests inside Docker container...'
+                // Run tests in a temporary container, using the same image we just built
+                bat "docker run --rm %DOCKER_IMAGE%:%DOCKER_TAG% npm test"
             }
         }
         
@@ -45,36 +39,19 @@ pipeline {
             }
         }
         
-        stage('Integration Test') {
+        stage('Verify Service') {
             steps {
-                echo 'Running integration tests against Docker container...'
+                echo 'Verifying services are running...'
                 script {
-                    // Wait for application to be ready (Windows-style sleep)
+                    // Wait for application to be ready
                     bat 'timeout /t 10 /nobreak'
                     
-                    // Test the running application
+                    // Check if services are running
+                    bat 'docker ps'
+                    
+                    // Simple health check to the API
                     bat 'curl -f http://localhost:3000 || echo "Service check completed"'
                 }
-            }
-        }
-        
-        stage('Generate Test Reports') {
-            steps {
-                echo 'Generating test reports...'
-                bat 'npm test -- --coverage'
-                
-                // Archive the test results if you're using JUnit reporter
-                junit allowEmptyResults: true, testResults: 'junit-*.xml'
-                
-                // Archive the coverage report
-                publishHTML(target: [
-                    allowMissing: false,
-                    alwaysLinkToLastBuild: false,
-                    keepAll: true,
-                    reportDir: 'coverage/lcov-report',
-                    reportFiles: 'index.html',
-                    reportName: 'Coverage Report'
-                ])
             }
         }
     }
@@ -83,6 +60,8 @@ pipeline {
         always {
             echo 'Cleaning up...'
             bat 'docker-compose down || echo "No containers to remove"'
+            // Remove unused Docker images to save space
+            bat 'docker image prune -f'
         }
         success {
             echo 'Pipeline completed successfully!'
