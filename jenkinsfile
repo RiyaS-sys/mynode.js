@@ -5,6 +5,8 @@ pipeline {
         DOCKER_IMAGE = 'blood-bank-app'
         DOCKER_TAG = "${env.BUILD_NUMBER}"
         PATH = "${env.PATH};C:\\Program Files\\Docker\\Docker\\resources\\bin"
+        DOCKERHUB_REPO = 'riyanovation/bloodbank'
+        DOCKERHUB_CREDENTIALS = credentials('dockerhub-credentials') // You'll need to create this credential in Jenkins
     }
     
     stages {
@@ -22,6 +24,10 @@ pipeline {
                 echo 'Building Docker production image...'
                 bat "docker build --target production -t %DOCKER_IMAGE%:%DOCKER_TAG% ."
                 bat "docker tag %DOCKER_IMAGE%:%DOCKER_TAG% %DOCKER_IMAGE%:latest"
+                
+                // Tag the image for DockerHub
+                bat "docker tag %DOCKER_IMAGE%:%DOCKER_TAG% %DOCKERHUB_REPO%:%DOCKER_TAG%"
+                bat "docker tag %DOCKER_IMAGE%:latest %DOCKERHUB_REPO%:latest"
             }
         }
         
@@ -29,6 +35,20 @@ pipeline {
             steps {
                 echo 'Running tests inside Docker container...'
                 bat "docker run --rm %DOCKER_IMAGE%-test:%DOCKER_TAG%"
+            }
+        }
+        
+        stage('Push to DockerHub') {
+            steps {
+                echo 'Pushing image to DockerHub...'
+                script {
+                    // Login to DockerHub
+                    bat "echo %DOCKERHUB_CREDENTIALS_PSW% | docker login -u %DOCKERHUB_CREDENTIALS_USR% --password-stdin"
+                    
+                    // Push images to DockerHub
+                    bat "docker push %DOCKERHUB_REPO%:%DOCKER_TAG%"
+                    bat "docker push %DOCKERHUB_REPO%:latest"
+                }
             }
         }
         
@@ -62,6 +82,9 @@ pipeline {
             echo 'Cleaning up...'
             bat 'docker-compose down || echo "No containers to remove"'
             bat 'docker image prune -f'
+            
+            // Logout from DockerHub
+            bat 'docker logout'
         }
         success {
             echo 'Pipeline completed successfully!'
