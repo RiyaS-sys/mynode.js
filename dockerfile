@@ -28,7 +28,6 @@ COPY --from=build /app/package*.json ./
 COPY --from=build /app/node_modules ./node_modules
 COPY --from=build /app/*.js ./
 COPY --from=build /app/frontend ./frontend
-COPY --from=build /app/public ./public
 
 # Expose port
 EXPOSE 3000
