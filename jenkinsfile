@@ -1,48 +1,72 @@
 pipeline {
     agent any
-
+    
     environment {
-        PATH = "${env.PATH};C:\\Program Files\\nodejs\\"
+        DOCKER_IMAGE = 'blood-bank-app'
+        DOCKER_TAG = "${env.BUILD_NUMBER}"
     }
-
+    
     stages {
         stage('Clone Repo') {
             steps {
                 git credentialsId: 'My_project', url: 'https://github.com/RiyaS-sys/mynode.js', branch: 'main'
             }
         }
-
+        
         stage('Install Dependencies') {
             steps {
                 echo 'Installing dependencies...'
-                bat 'npm install'
+                sh 'npm install'
             }
         }
-
-        stage('Test') {
+        
+        stage('Run Tests') {
             steps {
                 echo 'Running tests...'
-                // Since no real test is present, this will prevent pipeline failure
-                bat 'echo Tests passed!'
+                sh 'npm test'
             }
         }
-
-        stage('Deploy') {
+        
+        stage('Build Docker Image') {
             steps {
-                echo 'Deploying application...'
-                bat 'echo Deployment done!'
+                echo 'Building Docker image...'
+                sh "docker build -t ${DOCKER_IMAGE}:${DOCKER_TAG} ."
+                sh "docker tag ${DOCKER_IMAGE}:${DOCKER_TAG} ${DOCKER_IMAGE}:latest"
+            }
+        }
+        
+        stage('Run Docker Compose') {
+            steps {
+                echo 'Starting application with Docker Compose...'
+                sh 'docker-compose down || true'
+                sh 'docker-compose up -d'
+            }
+        }
+        
+        stage('Integration Test') {
+            steps {
+                echo 'Running integration tests against Docker container...'
+                script {
+                    // Wait for application to be ready
+                    sh 'sleep 10'
+                    
+                    // Here you can run curl or other tools to test your running application
+                    sh 'curl -f http://localhost:3000 || true'
+                }
             }
         }
     }
+    
+    post {
+        always {
+            echo 'Cleaning up...'
+            sh 'docker-compose down || true'
+        }
+        success {
+            echo 'Pipeline completed successfully!'
+        }
+        failure {
+            echo 'Pipeline failed!'
+        }
+    }
 }
-
-
-
-
-
-
-
-
-
-
-
